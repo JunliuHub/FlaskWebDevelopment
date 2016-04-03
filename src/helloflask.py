@@ -46,32 +46,39 @@
         `yourapplication.views.frontend`)
 """
 from flask.ext.script import Manager
-from flask import Flask
+from flask.ext.bootstrap import Bootstrap
+from flask.ext.moment import Moment
+from flask import Flask, render_template
+from datetime import datetime
 app = Flask(__name__)
+manager =Manager(app)
+bootstrap = Bootstrap(app)
+moment = Moment(app)
 
-""""    处理url和函数之间的关系的程序称为路由，定义路由最简单的方式为app.route修饰器
-        A decorator that is used to register a view function for a
-        given URL rule.  This does the same thing as :meth:`add_url_rule`
-        but is intended for decorator usage::
+""""处理url和函数之间的关系的程序称为路由，定义路由最简单的方式为app.route修饰器
+    A decorator that is used to register a view function for a
+    given URL rule.  This does the same thing as :meth:`add_url_rule`
+    but is intended for decorator usage::
 
             @app.route('/')
             def index():
                 return 'Hello World'
 """
-
-
 @app.route('/')
 def index():
-    return '<h1>Hello LiuJun!</h1>'
+    return render_template('index.html', current_time=datetime.utcnow())
 
-# 比如/user/<int:id>，支持int，float，path类型，默认为字符串
+
+# 处理url动态，用<>把动态部分括起来，flask会把动态部分作为参数传递给函数，动态部分支持类型定义，
+#  比如/user/<int:id>，支持int，float，path类型，默认为字符串
 @app.route('/user/<name>')
 def user(name):
-    return '<h1>Hello %s!</h1>' % name
-# 处理url动态，用<>把动态部分括起来，flask会把动态部分作为参数传递给函数，动态部分支持类型定义，
+    return render_template('user.html', name=name)
 
 
-manager =Manager(app)
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 #启动服务器，使用run方法
 if __name__ == '__main__':
