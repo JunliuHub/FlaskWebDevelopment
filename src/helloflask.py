@@ -45,7 +45,7 @@
         pick up SQL queries in `yourapplication.app` and not
         `yourapplication.views.frontend`)
 """
-
+from flask.ext.script import Manager
 from flask import Flask
 app = Flask(__name__)
 
@@ -64,15 +64,20 @@ app = Flask(__name__)
 def index():
     return '<h1>Hello LiuJun!</h1>'
 
-# 处理url动态，用<>把动态部分括起来，flask会把动态部分作为参数传递给函数，动态部分支持类型定义，
 # 比如/user/<int:id>，支持int，float，path类型，默认为字符串
 @app.route('/user/<name>')
 def user(name):
     return '<h1>Hello %s!</h1>' % name
+# 处理url动态，用<>把动态部分括起来，flask会把动态部分作为参数传递给函数，动态部分支持类型定义，
+
+
+manager =Manager(app)
 
 #启动服务器，使用run方法
 if __name__ == '__main__':
-    app.run(debug=True)
+    manager.run()
+
+
 
 
 
